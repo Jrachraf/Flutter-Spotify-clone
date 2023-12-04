@@ -73,47 +73,5 @@ class GlobalWidgets{
     );
   }
 
-  Widget MenuHListBody(context,String ImageUrl,String Title,String Desc){
-    return Container(
-      width: 180,
-      height: 270,
-      decoration: GlobalStyles().boxStyle(color: Color(0xff181818)),
-      padding: EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(8),
-            child: Container(
-              width: 160,
-              height: 160,
-              child: Image.network(
-                  "https://png.pngtree.com/background/20210715/original/pngtree-electronic-music-album-picture-image_1301130.jpg",
-                  fit: BoxFit.fill
-              ),
-            ),
-          ),
-          SizedBox(height: 16),
-          Text("Today's picks",style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.w700,
-              letterSpacing: 1,
-              fontSize: 14
-          )),
-          SizedBox(height: 5),
-          Expanded(
-            child: Text("Jack whoever is on top Of the top 100 in the world",
-                overflow: TextOverflow.fade,
-                style: TextStyle(
-                color: Colors.grey[500],
-                fontWeight: FontWeight.w500,
-                letterSpacing: 0.5,
-                height:1.2,
-                fontSize: 14
-            )),
-          ),
-        ],
-      ),
-    );
-  }
+
 }

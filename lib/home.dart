@@ -14,6 +14,7 @@ class _homePageState extends State<homePage> {
    final _style = GlobalStyles();
    final _widgets = GlobalWidgets();
    int? focusedIndex;
+   int? focuseddBox;
    bool isHovered = false;
    void refresh(bool ifff){
      print("ifff is ${ifff.toString()}");
@@ -21,9 +22,16 @@ class _homePageState extends State<homePage> {
        isHovered = ifff;
      });
    }
-
+   String? size;
   @override
   Widget build(BuildContext context) {
+     print(MediaQuery.of(context).size.width);
+     double width = MediaQuery.of(context).size.width;
+
+     if(width > 1010)
+       size = "big";
+     else
+       size = "small";
     return Scaffold(
       backgroundColor: Colors.black,
       body: Padding(
@@ -40,6 +48,7 @@ class _homePageState extends State<homePage> {
 
                   body(),
                   SizedBox(width: 10),
+                  if(width > 1010)
                   rightSlid(),
                   SizedBox(width: 10),
                 ],
@@ -102,24 +111,8 @@ class _homePageState extends State<homePage> {
                            Icon(Icons.list,color: Colors.grey[500])
                          ],
                        ),
-                       Material(
-                         type: MaterialType.transparency,
-                         child: ListTile(
-                           hoverColor: Colors.grey[800],
-                           focusColor: Colors.red,
-                           shape: RoundedRectangleBorder(
-                             borderRadius: BorderRadius.circular(4),
-
-                           ),
-                           onTap: () {
-                             print("tapped");
-                           },
-                           contentPadding: EdgeInsets.symmetric(horizontal: 10,vertical: 10),
-                           leading: ClipRRect(borderRadius: BorderRadius.circular(6), child: Image.network("https://i.scdn.co/image/ab67616d0000b273a426bc05c4c7531da2ea0ee5")),
-                           title: Text("Liked Songs",),
-                           subtitle: Text("Playlist Achraf"),
-                         ),
-                       )
+                       leftTile(),
+                       leftTile(),
                      ],
                    )
                  ],
@@ -155,7 +148,7 @@ class _homePageState extends State<homePage> {
              shrinkWrap: true,
              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                  crossAxisCount: 2,
-                 childAspectRatio: 7,
+                 childAspectRatio: MediaQuery.of(context).size.width < 1150 ? 5 : 7,
                  crossAxisSpacing: 10,
                  mainAxisSpacing: 10
              ),
@@ -166,7 +159,6 @@ class _homePageState extends State<homePage> {
                    setState(() {
                      if(!value) {
                        focusedIndex = null;
-                       print("cleared index");
                      } else
                        focusedIndex = index;
                    });
@@ -246,7 +238,19 @@ class _homePageState extends State<homePage> {
                  return SizedBox(width: 20);
                },
                itemBuilder: (context, index) {
-                 return _widgets.MenuHListBody(context,"URL","Title","Image Description");
+                 return InkWell(
+                   onTap: (){},
+                   onHover: (value){
+                     print(value);
+                     setState(() {
+                       if(value)
+                        focuseddBox = index;
+                       else
+                         focuseddBox = null;
+                     });
+                   },
+                     child: MenuHListBody(context,"URL","Title","Image Description",focuseddBox == index)
+                 );
                },
              ),
            ),
@@ -262,11 +266,207 @@ class _homePageState extends State<homePage> {
          children: [
            Expanded(
              child: Container(
-                 decoration: _style.boxStyle()
+                 decoration: _style.boxStyle(),
+               padding: EdgeInsets.symmetric(vertical: 20,horizontal: 20),
+               child: ListView(
+                 children: [
+                   //title
+
+                   Row(
+                     children: [
+                       Text("Liked Songs",style: TextStyle(
+                         color: Colors.white,
+                         fontSize: 16,
+                         fontWeight: FontWeight.w500
+                       ),),
+                       Spacer(),
+                       IconButton(
+                         selectedIcon: Icon(Icons.close,color: Colors.grey[300],),
+                           tooltip: "Close",
+                           onPressed: (){
+
+                           },
+                           icon: Icon(Icons.close,color: Colors.grey[500],),
+
+                          color: Colors.transparent,
+                       )
+                     ],
+                   ),
+                   SizedBox(height: 20),
+
+                   //Album Cover
+                   ClipRRect(
+                     borderRadius: BorderRadius.circular(8),
+                     child: Image.network(
+                       "https://i.redd.it/svk8zd3km9o71.jpg",
+                       width: double.infinity,
+                       fit: BoxFit.fitWidth,
+                     ),
+                   ),
+                   SizedBox(height: 15),
+
+                   //Track info
+                   Row(
+                     children: [
+                       Column(
+                         crossAxisAlignment: CrossAxisAlignment.start,
+                         children: [
+                           Text(
+                             "Blinding Lights",
+                             style: TextStyle(
+                               fontSize: 24,
+                               color: Colors.white,
+                               fontWeight: FontWeight.w600
+                             ),
+                           ),
+                           SizedBox(height: 2),
+                           Text(
+                             "The Weeknd",
+                             style: TextStyle(
+                                 fontSize: 16,
+                                 color: Colors.grey[400],
+                                 fontWeight: FontWeight.w300
+                             ),
+                           ),
+                         ],
+                       )
+                     ],
+                   )
+                 ],
+               ),
              ),
            )
          ],
        ),
      );
   }
+
+  Widget leftTile(){
+    return Material(
+      type: MaterialType.transparency,
+      child: ListTile(
+        hoverColor: Colors.grey[800],
+        textColor: Colors.white,
+
+        focusColor: Colors.red,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(4),
+
+        ),
+        onTap: () {
+          print("tapped");
+        },
+        contentPadding: EdgeInsets.symmetric(horizontal: 5,vertical: 0),
+        leading: ClipRRect(borderRadius: BorderRadius.circular(6), child: Image.network("https://i.scdn.co/image/ab67616d0000b273a426bc05c4c7531da2ea0ee5")),
+        title: Text("Liked Songs",style: TextStyle(fontWeight: FontWeight.w200,fontSize: 15),),
+        subtitle: Text("Playlist Achraf",style: TextStyle(fontWeight: FontWeight.w200,fontSize: 13,color: Colors.grey[300]),),
+      ),
+    );
+  }
+
+   Widget MenuHListBody(context,String ImageUrl,String Title,String Desc,bool hover){
+     double size  = 0;
+     return Material(
+       type: MaterialType.transparency,
+       child: Container(
+         width: 180,
+         height: 270,
+         decoration: GlobalStyles().boxStyle(color: hover ? Color(0xff535353)  : Color(0xff181818)),
+         padding: EdgeInsets.all(16),
+         child: Column(
+           crossAxisAlignment: CrossAxisAlignment.start,
+           children: [
+             ClipRRect(
+               borderRadius: BorderRadius.circular(8),
+               child: AnimatedContainer(
+                 duration: Duration(milliseconds: 150),
+                 width: 160,
+                 height: 160 ,
+                 child: Stack(
+                   children: [
+
+                     Image.network(
+                       "https://png.pngtree.com/background/20210715/original/pngtree-electronic-music-album-picture-image_1301130.jpg",
+                       fit: BoxFit.fill,
+                       width: 150,
+                       height: double.infinity,
+                     ),
+                     // if(hover)
+                     AnimatedOpacity(
+                       duration: Duration(milliseconds: 150),
+                       opacity: hover ? 1 : 0,
+                       child: AnimatedAlign(
+                         duration: Duration(milliseconds: 150),
+                         curve: Curves.easeInOut,
+                         alignment: Alignment(0.8, hover ? 0.85 : 1),
+                         child: Material(
+                           type: MaterialType.transparency,
+                           child: InkWell(
+                               onTap: (){
+                                 setState(() {
+                                   size = 5;
+                                 });
+                               },
+                               onHover: (value) {
+                                 setState(() {
+                                   if(value)
+                                     size = 10;
+                                   else
+                                     size = 0;
+                                 });
+                               },
+                             child: Material(
+                               type: MaterialType.transparency,
+                               child: AnimatedContainer(
+                                 duration: Duration(milliseconds: 150),
+                                 width: 45 + size,
+                                 height: 45 + size,
+                                 decoration: BoxDecoration(
+                                     color: Color(0xff1db954),
+                                     borderRadius: BorderRadius.circular(100),
+                                     boxShadow: [
+                                       BoxShadow(
+                                           color: Colors.black.withOpacity(0.2),
+                                           spreadRadius: 0.8,
+                                           blurRadius: 5,
+                                           offset: Offset(3, 2)
+                                       )
+                                     ]
+                                 ),
+                                 child: Icon(Icons.play_arrow,color: Colors.black),
+                               ),
+                             ),
+                           ),
+                         ),
+                       ),
+                     ),
+                   ],
+                 ),
+               ),
+             ),
+             SizedBox(height: 16),
+             Text("Today's picks",style: TextStyle(
+                 color: Colors.white,
+                 fontWeight: FontWeight.w700,
+                 letterSpacing: 1,
+                 fontSize: 14
+             )),
+             SizedBox(height: 5),
+             Expanded(
+               child: Text("Jack whoever is on top Of the top 100 in the world",
+                   overflow: hover ? TextOverflow.visible : TextOverflow.fade,
+                   style: TextStyle(
+                       color: Colors.grey[500],
+                       fontWeight: FontWeight.w500,
+                       letterSpacing: 0.5,
+                       height:1.2,
+                       fontSize: 14
+                   )),
+             ),
+           ],
+         ),
+       ),
+     );
+   }
+
 }
