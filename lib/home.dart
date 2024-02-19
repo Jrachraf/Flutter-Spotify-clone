@@ -366,7 +366,7 @@ class _homePageState extends State<homePage> {
                    ClipRRect(
                      borderRadius: BorderRadius.circular(8),
                      child: Image.network(
-                       "https://i.redd.it/svk8zd3km9o71.jpg",
+                       "https://i.ibb.co/G7CP07X/svk8zd3km9o71.jpg",
                        width: double.infinity,
                        fit: BoxFit.fitWidth,
                      ),
